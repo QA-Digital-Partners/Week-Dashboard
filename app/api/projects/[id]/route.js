@@ -28,7 +28,6 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params
-    console.log('Deleting project id:', id)
 
     const result = await pool.query(
       'DELETE FROM projects WHERE id = $1 RETURNING id',
@@ -41,7 +40,6 @@ export async function DELETE(request, { params }) {
 
     return Response.json({ success: true, id })
   } catch (error) {
-    console.error('Delete error:', error)
     return Response.json({ error: error.message }, { status: 500 })
   }
 }

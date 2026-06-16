@@ -46,6 +46,6 @@ export const INITIAL_PROJECTS = [
 ]
 
 export const STATUS_OPTIONS = ['Active', 'On Hold', 'Delay', 'Completed', 'Abandoned']
-export const PM_OPTIONS = ['Sebastian', 'Julián', 'Alfonso', 'Marián', 'Juan Camilo', 'Daisy', 'Esteban']
+export const PM_OPTIONS = ['Sebastian A.', 'Julián Q.', 'Alfonso Q.', 'Marián S.', 'Juan Camilo', 'Daisy', 'Esteban A.', 'Camilo R.']
 export const STATUS_RESPONSABLE = ['QA', 'Client', 'QA/Client', 'N/A']
 export const NOTES_RESPONSABLE = ['Camilo Ramos', 'Julian Quiñones']

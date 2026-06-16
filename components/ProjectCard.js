@@ -134,7 +134,7 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
           <div className="flex items-start gap-2">
             <FileText size={12} className="text-slate-500 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-xs text-slate-400 leading-relaxed">{latestNote.note}</p>
+              <p className="text-[25px] text-slate-400 leading-relaxed">{latestNote.note}</p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] font-medium text-indigo-400">{latestNote.created_by}</span>
                 <span className="text-[10px] text-slate-600">{formatDate(latestNote.created_at)}</span>
