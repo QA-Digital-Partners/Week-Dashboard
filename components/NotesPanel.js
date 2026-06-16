@@ -6,7 +6,7 @@ import { NOTES_RESPONSABLE } from '@/data/projects'
 export default function NotesPanel({ projectId }) {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
-  const [author, setAuthor] = useState('Sebastian')
+  const [author, setAuthor] = useState('Camilo Ramos')
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
 
