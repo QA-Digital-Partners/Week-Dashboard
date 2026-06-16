@@ -3,7 +3,7 @@ import pool from '@/lib/db'
 export async function GET() {
   try {
     const result = await pool.query(
-      'SELECT * FROM projects ORDER BY created_at DESC'
+      'SELECT * FROM projects ORDER BY start_date ASC'
     )
     return Response.json(result.rows)
   } catch (error) {
