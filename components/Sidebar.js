@@ -1,17 +1,17 @@
 'use client'
-import { LayoutDashboard, PlusCircle, Archive, XCircle } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, Archive, XCircle, Globe } from 'lucide-react'
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'new', label: 'New Project', icon: PlusCircle },
   { id: 'archived', label: 'Archived', icon: Archive },
   { id: 'abandoned', label: 'Abandoned', icon: XCircle },
+  { id: 'wordpress', label: 'WP Maintenance', icon: Globe },
 ]
 
 export default function Sidebar({ activeSection, onNavigate }) {
   return (
     <aside className="fixed left-0 top-0 h-full w-60 bg-[#1E293B] border-r border-[#334155] flex flex-col z-40">
-      {/* Logo / Brand */}
       <div className="px-6 py-6 border-b border-[#334155]">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
@@ -24,7 +24,6 @@ export default function Sidebar({ activeSection, onNavigate }) {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const isActive = activeSection === id
@@ -45,7 +44,6 @@ export default function Sidebar({ activeSection, onNavigate }) {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="px-6 py-4 border-t border-[#334155]">
         <p className="text-[10px] text-slate-600">Glen Burnie, MD</p>
       </div>
