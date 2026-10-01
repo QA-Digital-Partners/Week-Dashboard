@@ -27,6 +27,7 @@ export default function Home() {
   const [wpMaintenance, setWpMaintenance] = useState({ monthly: {}, quarterly: {} })
   const wpSaveQueue = useRef({})
   const wpQuarter = quarterOf(wpMonth)
+  const [wpHistory, setWpHistory] = useState([])
   const [wpSearch, setWpSearch] = useState('')
   const [wpFilter, setWpFilter] = useState('all')
   const [wpSort, setWpSort] = useState('name')
@@ -66,6 +67,17 @@ export default function Home() {
     }
   }
 
+  const fetchWpHistory = async () => {
+    try {
+      const res = await fetch('/api/wp-maintenance?history=1')
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      setWpHistory(data.months)
+    } catch (error) {
+      console.error('Error fetching maintenance history:', error)
+    }
+  }
+
   useEffect(() => {
     fetchProjects()
     fetchWpClients()
@@ -73,7 +85,19 @@ export default function Home() {
 
   useEffect(() => {
     fetchWpMaintenance(wpMonth)
+    fetchWpHistory()
   }, [wpMonth])
+
+  // Navegación: del mes actual en adelante libremente; hacia atrás solo meses con información guardada
+  const wpPastMonths = wpHistory.filter((m) => m < monthKey())
+  const prevWpMonth = (month) => {
+    if (month > monthKey()) return shiftMonth(month, -1)
+    return wpPastMonths.filter((m) => m < month).pop() || null
+  }
+  const nextWpMonth = (month) => {
+    if (month >= monthKey()) return shiftMonth(month, 1)
+    return wpPastMonths.find((m) => m > month) || monthKey()
+  }
 
   // Actualización optimista; los guardados de un mismo cliente/periodo se envían en orden
   const handleWpRecordChange = (clientId, periodType, record) => {
@@ -314,10 +338,8 @@ export default function Home() {
             quarter={wpQuarter}
             maintenance={wpMaintenance}
             onMonthChange={setWpMonth}
-            onShift={(delta) => setWpMonth((m) => {
-              const next = shiftMonth(m, delta)
-              return next < monthKey() ? monthKey() : next
-            })}
+            canGoBack={prevWpMonth(wpMonth) !== null}
+            onShift={(delta) => setWpMonth((m) => (delta < 0 ? prevWpMonth(m) || m : nextWpMonth(m)))}
           />
           {wpClients.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-slate-500 text-sm">

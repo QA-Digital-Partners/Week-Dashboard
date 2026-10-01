@@ -64,7 +64,7 @@ function CountTile({ icon: Icon, label, value, total, accent }) {
   )
 }
 
-export default function WpMaintenanceSummary({ clients, month, quarter, maintenance, onMonthChange, onShift }) {
+export default function WpMaintenanceSummary({ clients, month, quarter, maintenance, canGoBack, onMonthChange, onShift }) {
   const monthly = clients.map((c) => computeProgress('monthly', maintenance.monthly[c.id]?.tasks))
   const quarterly = clients.map((c) => computeProgress('quarterly', maintenance.quarterly[c.id]?.tasks))
 
@@ -77,8 +77,8 @@ export default function WpMaintenanceSummary({ clients, month, quarter, maintena
   const monthlyUpToDate = monthly.filter((p) => p.percentage === 100).length
   const quarterlyUpToDate = quarterly.filter((p) => p.percentage === 100).length
   const pendingTasks = sum(monthly, 'pending') + sum(quarterly, 'pending')
-  // Solo se navega desde el mes actual en adelante
-  const isCurrentMonth = month <= monthKey()
+  const isCurrentMonth = month === monthKey()
+  const isPastMonth = month < monthKey()
 
   return (
     <div className="mb-8">
@@ -87,14 +87,22 @@ export default function WpMaintenanceSummary({ clients, month, quarter, maintena
         <div className="flex items-center gap-2">
           <button
             onClick={() => onShift(-1)}
-            disabled={isCurrentMonth}
+            disabled={!canGoBack}
+            title={canGoBack ? 'Mes anterior' : 'No hay meses anteriores con información guardada'}
             className="p-2 rounded-xl bg-[#1E293B] border border-[#334155] text-slate-400 hover:text-slate-100 hover:border-slate-500 transition-all disabled:opacity-30 disabled:pointer-events-none"
             aria-label="Mes anterior"
           >
             <ChevronLeft size={14} />
           </button>
           <div className="px-4 py-1.5 min-w-44 text-center">
-            <p className="text-sm font-semibold text-slate-100">{monthLabel(month)}</p>
+            <p className="flex items-center justify-center gap-2 text-sm font-semibold text-slate-100">
+              {monthLabel(month)}
+              {isPastMonth && (
+                <span className="text-[10px] font-medium uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded-md">
+                  Histórico
+                </span>
+              )}
+            </p>
             <p className="text-[11px] text-slate-500">
               {quarterLabel(quarter)} · mes {monthInQuarter(month)} de 3
             </p>

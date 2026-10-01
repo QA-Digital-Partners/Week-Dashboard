@@ -37,6 +37,23 @@ export async function GET(request) {
   try {
     await ensureTable()
     const { searchParams } = new URL(request.url)
+
+    // GET /api/wp-maintenance?history=1 → meses con información guardada
+    // (tareas marcadas o notas). Un trimestre con datos aporta su último mes.
+    if (searchParams.has('history')) {
+      const result = await pool.query(
+        `SELECT DISTINCT
+           CASE WHEN period_type = 'monthly' THEN period
+                ELSE split_part(period, '-Q', 1) || '-' ||
+                     lpad((split_part(period, '-Q', 2)::int * 3)::text, 2, '0')
+           END AS month
+         FROM wp_maintenance_checks
+         WHERE tasks <> '{}'::jsonb OR notes <> ''
+         ORDER BY month`
+      )
+      return Response.json({ months: result.rows.map((r) => r.month) })
+    }
+
     const month = searchParams.get('month')
     const quarter = searchParams.get('quarter')
 
