@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { Pencil, Trash2, CalendarDays, User, FileText, BarChart2, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
+import { Pencil, Trash2, CalendarDays, User, FileText, BarChart2, ExternalLink, ChevronDown, ChevronUp, Clock } from 'lucide-react'
 import StatusChip from '@/components/StatusChip'
 
 function DataField({ icon: Icon, label, value, isLink }) {
@@ -31,6 +31,45 @@ function DataField({ icon: Icon, label, value, isLink }) {
       </span>
       <span className="text-sm text-slate-200 font-medium leading-snug">{value || '—'}</span>
     </div>
+  )
+}
+
+// Días entre hoy y la fecha de finalización (negativo = ya pasó)
+function daysUntil(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const end = new Date(y, m - 1, d)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return Math.round((end - today) / 86400000)
+}
+
+function Countdown({ endDate }) {
+  if (!endDate) return null
+  const days = daysUntil(endDate)
+  const plural = (n) => (n === 1 ? 'día' : 'días')
+
+  let text, style
+  if (days < 0) {
+    text = `${-days} ${plural(-days)} de retraso`
+    style = 'bg-red-500/15 text-red-400 border-red-500/30'
+  } else if (days === 0) {
+    text = 'Vence hoy'
+    style = 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+  } else {
+    text = `Faltan ${days} ${plural(days)}`
+    style = days <= 7
+      ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+      : 'bg-slate-500/15 text-slate-300 border-slate-500/30'
+  }
+
+  return (
+    <span
+      title={`Fecha de finalización: ${endDate}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border tabular-nums ${style}`}
+    >
+      <Clock size={11} />
+      {text}
+    </span>
   )
 }
 
@@ -74,6 +113,9 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
             {project.name}
           </h3>
           <StatusChip status={project.status} />
+          {project.status !== 'Completed' && project.status !== 'Abandoned' && (
+            <Countdown endDate={project.endDate} />
+          )}
         </div>
 
         {/* Botones de acción */}

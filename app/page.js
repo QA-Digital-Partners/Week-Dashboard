@@ -225,8 +225,9 @@ export default function Home() {
   const normalize = (p) => ({
     id: p.id,
     name: p.name,
-    startDate: p.start_date,
-    endDate: p.end_date,
+    // La API devuelve '2026-09-30T00:00:00.000Z'; solo se usa año-mes-día
+    startDate: p.start_date?.slice(0, 10) || '',
+    endDate: p.end_date?.slice(0, 10) || '',
     pm: p.pm,
     status: p.status,
     statusResponsable: p.status_responsable,
